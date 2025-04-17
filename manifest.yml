@@ -1,0 +1,9 @@
+applications:
+- name: ticketing-system
+  memory: 256M
+  buildpacks:
+    - nodejs_buildpack
+    - python_buildpack
+  command: gunicorn myproject.wsgi
+  services:
+    - my-database

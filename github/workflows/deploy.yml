@@ -1,0 +1,23 @@
+name: Deploy to Cloud.gov
+on:
+  push:
+    branches:
+    - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Cloud Foundry CLI
+      run: |
+        curl -L "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=8.7.10" | tar -zx
+        mv cf /usr/local/bin/
+    - name: Login to Cloud.gov
+      run: cf login -a https://api.cloud.gov -u $CF_USERNAME -p $CF_PASSWORD -o $CF_ORG -s $CF_SPACE
+      env:
+        CF_USERNAME: ${{ secrets.CF_USERNAME }}
+        CF_PASSWORD: ${{ secrets.CF_PASSWORD }}
+        CF_ORG: ${{ secrets.CF_ORG }}
+        CF_SPACE: ${{ secrets.CF_SPACE }}
+    - name: Push to Cloud.gov
+      run: cf push
